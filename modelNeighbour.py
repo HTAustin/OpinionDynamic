@@ -95,23 +95,38 @@ if __name__=="__main__":
     userData=generateData(runF)
 
     initOpinions=[]
+    finalOpinions=[]
 
     for user in userData:
         initOpinions.append(int(userData[user][0]))
         # print int(userData[user][0])
+        finalOpinions.append(int(userData[user][3]))
 
     initOpinions.sort()
+    finalOpinions.sort()
+    values_A_to_plot = [200001 if i > 200000 else i for i in initOpinions]
+    values_B_to_plot = [200001 if i > 200000 else i for i in finalOpinions]
 
 
-    fit = stats.norm.pdf(initOpinions, np.mean(initOpinions), np.std(initOpinions))  #this is a fitting indeed
+    # fit = stats.norm.pdf(initOpinions, np.mean(initOpinions), np.std(initOpinions))  #this is a fitting indeed
+    
+    # plt.plot(initOpinions,fit,'-o')
 
-    plt.plot(initOpinions,fit,'-o')
+    binwidth=(max(values_A_to_plot)-min(values_A_to_plot))/40
 
-    plt.hist(initOpinions,normed=True, color='g')      #use this to draw histogram of your data
+
+
+
+    plt.hist([values_A_to_plot,values_B_to_plot],bins=range(min(initOpinions), max(initOpinions) + binwidth, binwidth),normed=False,alpha=0.5, label='Inital Opinion')
+
+
+    # plt.hist(finalOpinions,bins=range(min(finalOpinions), max(finalOpinions) + binwidth, binwidth),normed=False,alpha=0.5,label='Final Opinion')  
+    #use this to draw histogram of your data
 
     plt.ylabel('#Users', fontsize=18)
-    
+
     plt.xlabel('Initial Opinion', fontsize=18)
+    plt.legend(loc='upper right')
 
     plt.show()
 

@@ -4,7 +4,7 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{hyperref}
-
+\usepackage{comment}
 
 
 
@@ -27,8 +27,8 @@
 
 
 
-\title{CS 886 Project\\Modeling Social Relationship Effects in Opinion Dynamics}
-\author{Jian Li\\Advisor: Robin Cohen\\University of Waterloo\\h435zhan@uwaterloo.ca}
+\title{CS 886 Project\\Modeling Effects of Social Relationship in Opinion Dynamics}
+\author{Haotian Zhang\\Advisor: Robin Cohen\\University of Waterloo\\h435zhan@uwaterloo.ca}
 \date{}
 
 
@@ -36,25 +36,44 @@
 \maketitle
 
 \begin{abstract}
-The opinions of social networks are greatly shaped and influenced
-by their friends (neighbors). This paper propose a model
+The opinions of social media users are greatly shaped and influenced
+by their social network friends (neighbors). Understanding how users
+iteratively update opinions based on opinions from their neighbors 
+is critical for modeling opinion formation and informational influence.
+We find that existing and widely studied opinion dynamics models
+regard the neighbors of a certain agent dynamically change according to
+to the similarity between their opinions. And these models would
+assign higher connection probability between agents with higher homophily
+or more similar opinions.
+However, this assumption
+ignores the fact that most of users maintain a acquaintance
+network with some of their closest friends. And degrees of friendship with
+different types neighbors could affect agents' opinions to varying extent. In this
+paper, we propose a novel model which takes the degree of friendship as 
+a variable into consideration. Via controlled experiment,
+we want to find out the how user update opinions based on opinions from
+neighbors with varying friendship.
 
 \end{abstract}
 
 
 \section{Introduction}
+Based on DEGROOT model and skepticism model, we propose a model that combines the variance of friendship with averaging model. Agents $\{1,2,...,n\}$ are connected by Erd\"{o}s R\'{e}nyi random graph $G=(V,E)$. $E$ has two sets of edges $E_O$ and $E_C$ which stand for close friends and ordinary friends respectively. $x_i \in [0,1]$ represents the opinion held by agent $i$. Agent $i$ has two types of neighbors $C(i)=\{v \in V|\{i,v\}\in E_C\}$ and $O(i)=\{v \in V|\{i,v\}\in E_O\}$ so that opinion $x_i$ is influenced by these neighbors with different weights $y_{i,k}=y_{k,i}$ and $w_{i,j}=w_{j,i}$.  
+\begin{equation}
+x_i \gets \frac{w_{i,i}x_i + \alpha\sum\limits_{j \in C(i)}y_{i,j}x_j + (1-\alpha)\sum\limits_{k \in O(i)}w_{i,k}x_k}{w_{i,i}x_i + \alpha\sum\limits_{j \in C(i)}y_{i,j} + (1-\alpha)\sum\limits_{k \in O(i)}w_{i,k}}
+\end{equation} 
 
-Nowadays, many popular websites, like Yelp, provide large number of reviews and opinions written by users for various services.
-Besides reviews which provide much detail information, Yelp also ask users to give a quantitative star rating for every review (i.e. 1 star to 5 stars).
-However, their quantitative star ratings rarely show the most objective or the fairest rating because of different judgments or preferences from users.
-From the dataset, we could find that most of the reviews on Yelp are skewed towards higher ratings and we could also find that the disagreement between users' text reviews and their star ratings.
-In this project, I try to find an approach that can turn natural language words into more objective quantitative or qualitative ratings, which assumes that users' text reviews can provide more details and more objective information than their ratings.
+In our model, we assume $\min\limits_{{i,k}\in O_C}{y_{i,k}}>\max{w_{i,j}}$ since that the agent $i$ is more receptive to acquaintance with higher friendship. 
 
-Using the Yelp Challenge Academic Dataset and pre-trained word vectors, I run various convolutional neural network experiments on text reviews and to predict the star ratings associated with these reviews.
-I use previous work doing sentiment analysis on the same Yelp review dataset as baselines.
+\begin{equation}
+w_{i,k} \gets \frac{w_{i,k} + rT(x_i,x_k)}{1+r}
+\end{equation} 
 
+\begin{equation}
+T(x,x{'})=exp(-\frac{(x-x{'})^2}{h})
+\end{equation} 
 
-
+\begin{comment}
 \section{Background and Related Work}
 
 Sentiment analysis is a hot and well-studied topic in NLP. One simple model for sentiment analysis is the bag-of-words model, which vectorizes a paragraph or sentences as the occurrence counts for each word, and this model can also combine with the tf-idf measure to extract keywords from texts.
@@ -358,7 +377,7 @@ And I have though several possible extensions and future works which I could try
 \subsection*{Acknowledgments}
 
 I would like to thank Haotian Zhang, Siwei Yang, Yahui Chen and Hisham El-Zein for their suggestions and discussions.
-
+\end{comment}
 
 \bibliography{report}
 \bibliographystyle{plain}

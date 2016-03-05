@@ -3,4 +3,5 @@
 *.md
 *.out
 *.log
-
+*.bbl
+*.blg

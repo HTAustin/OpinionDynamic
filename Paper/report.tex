@@ -27,7 +27,7 @@
 
 
 
-\title{CS 886 Project\\Modeling Effects of Social Relationship in Opinion Dynamics}
+\title{CS 886 Project Proposal\\Modeling Effects of Social Relationship in Opinion Dynamics}
 \author{Haotian Zhang\\Advisor: Robin Cohen\\University of Waterloo\\h435zhan@uwaterloo.ca}
 \date{}
 
@@ -43,10 +43,10 @@ is critical for modeling opinion formation and informational influence.
 We find that existing and widely studied opinion dynamics models
 regard the neighbors of a certain agent dynamically change according to
 to the similarity between their opinions. And these models would
-assign higher connection probability between agents with higher homophily
+assign higher connection probability to agents with higher homophily
 or more similar opinions.
 However, this assumption
-ignores the fact that most of users maintain a acquaintance
+ignores the fact that most of users maintain a relative stable acquaintance
 network with some of their closest friends. And degrees of friendship with
 different types neighbors could affect agents' opinions to varying extent. In this
 paper, we propose a novel model which takes the degree of friendship as 
@@ -57,21 +57,23 @@ neighbors with varying friendship.
 \end{abstract}
 
 
-\section{Introduction}
-Based on DEGROOT model and skepticism model, we propose a model that combines the variance of friendship with averaging model. Agents $\{1,2,...,n\}$ are connected by Erd\"{o}s R\'{e}nyi random graph $G=(V,E)$. $E$ has two sets of edges $E_O$ and $E_C$ which stand for close friends and ordinary friends respectively. $x_i \in [0,1]$ represents the opinion held by agent $i$. Agent $i$ has two types of neighbors $C(i)=\{v \in V|\{i,v\}\in E_C\}$ and $O(i)=\{v \in V|\{i,v\}\in E_O\}$ so that opinion $x_i$ is influenced by these neighbors with different weights $y_{i,k}=y_{k,i}$ and $w_{i,j}=w_{j,i}$.  
+\section{Acquaintance Opinion Dynamics Model}
+Based on DEGROOT model \cite{das2014modeling} and skepticism model \cite{tsang2014opinion}, we propose a new model that combines the variance of friendship with traditional averaging model. Agents $\{1,2,...,n\}$ are connected by Erd\"{o}s R\'{e}nyi random graph $G=(V,E)$. $x_i \in [0,1]$ represents the opinion held by agent $i$. For each agent, $i$ has two sets of adjacent edges $E_O$ and $E_C$ which stand for the connections with close friends and ordinary neighbors respectively. In other words, agent $i$ has two types of neighbors $C(i)=\{v \in V|\{i,v\}\in E_C\}$ and $O(i)=\{v \in V|\{i,v\}\in E_O\}$. 
+
+In this model, agent $i$ is parameterized by one innate quantities: $\alpha$ is termed as the \textbf{acquaint parameter} to measure the probability to be persuaded by someone with a closer relationship. In reality, agent's opinion is more likely to be affected by his family members and close friends. Other types of neighbors may not achieve the same level of influence.
+The opinion $x_i$ is also influenced by various types of neighbors with different trust value $y_{i,k}>0$ for close friends and $w_{i,j}>0$ for ordinary neighbors.  
 \begin{equation}
 x_i \gets \frac{w_{i,i}x_i + \alpha\sum\limits_{j \in C(i)}y_{i,j}x_j + (1-\alpha)\sum\limits_{k \in O(i)}w_{i,k}x_k}{w_{i,i}x_i + \alpha\sum\limits_{j \in C(i)}y_{i,j} + (1-\alpha)\sum\limits_{k \in O(i)}w_{i,k}}
 \end{equation} 
-
-In our model, we assume $\min\limits_{{i,k}\in O_C}{y_{i,k}}>\max{w_{i,j}}$ since that the agent $i$ is more receptive to acquaintance with higher friendship. 
-
 \begin{equation}
 w_{i,k} \gets \frac{w_{i,k} + rT(x_i,x_k)}{1+r}
-\end{equation} 
-
+\end{equation}
+In our model, we assume $\min\limits_{{j}\in C_i}{y_{i,j}} > \max\limits_{{k}\in O_i}{w_{i,k}}$ since that the agent $i$ remains more receptive to his acquaintances $C_i$ than other ordinary neighbors $O_i$ in most cases. For $w_{i,k}$ in each iteration, it is updated via trust function $T$ which is based on distance between opinions $x$ and $x{'}$ via the Gaussian kernel shown in Equation \ref{trust}. $h$ is the empathy of the population: a higher $h$ means agents are more easily influenced by other agents with different opinions. 
 \begin{equation}
 T(x,x{'})=exp(-\frac{(x-x{'})^2}{h})
+\label{trust}
 \end{equation} 
+As for the trust value $y_{i,j}$ assigned to $i$'s closer acquaintance, we assume the degree distribution of acquaintance networks follows a power-law distribution \cite{muchnik2013origins}. So only limited neighbors can be regarded as acquaintances in our defined model. Currently, we set all weights as $\{y_{i,j}=1|j \in C_i\}$ to simplify the simulation process.
 
 \begin{comment}
 \section{Background and Related Work}
@@ -86,7 +88,7 @@ In fact, word embedding was originally introduced by Bengio et al.\ in 2001.
 A word embedding $W : w\rightarrow \mathbb{R}^k$ is a function mapping words of the language into $k$-dimensional vectors, called \textit{word vector}.
 The word vectors can put similar words close together in the vector space, which captures some syntactic and semantic information between words.
 For example, $d(\mbox{China}, \mbox{Beijing}) \approx d(\mbox{Canada}, \mbox{Ottawa})$, $d(\mbox{Microsoft}, \mbox{Windows}) \approx d(\mbox{Google}, \mbox{Android})$.
-And the word vectors can be trained by skip-gram or continuous bag-of-words model in an unsupervised way.
+And the word vectors can be trained by skip-gram or continuous bag-of-words model in an unsupervised way. 
 
 
 \subsection{Convolutional Neural Network}

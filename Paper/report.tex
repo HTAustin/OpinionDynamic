@@ -39,29 +39,29 @@
 The opinions of social media users are greatly shaped and influenced
 by their social network friends (neighbors). Understanding how users
 iteratively update opinions based on opinions from their neighbors 
-is critical for modeling opinion formation and informational influence.
+is critical in the context of modeling opinion formation and informational influence for social network research.
 We find that existing and widely studied opinion dynamics models
-regard the neighbors of a certain agent dynamically change according to
-to the similarity between their opinions. And these models would
-assign higher connection probability to agents with higher homophily
-or more similar opinions.
-However, this assumption
-ignores the fact that most of users maintain a relative stable acquaintance
-network with some of their closest friends. And degrees of friendship with
-different types neighbors could affect agents' opinions to varying extent. In this
+consider the neighbors of a certain agent dynamically change their opinions according to the similarity. And these models would
+be more receptive to agents with higher homophily
+or more similar opinions while becoming more skeptical of others. However, this assumption ignores the fact that most users maintain a relatively stable acquaintance
+network with some of their close family members or friends. And degrees of friendship with different types of neighbors could affect agents' opinions to varying extent. In this
 paper, we propose a novel model which takes the degree of friendship as 
-a variable into consideration. Via controlled experiment,
+a variable into consideration. Via controlled experiments,
 we want to find out the how user update opinions based on opinions from
-neighbors with varying friendship.
+neighbors with varying friendship degree.
 
 \end{abstract}
 
+\section{Introduction}
+
+\section{Related Work}
+\cite{tsang2014opinion} Skepticism model explore the effects of skepticism between agents.
 
 \section{Acquaintance Opinion Dynamics Model}
-Based on DEGROOT model \cite{das2014modeling} and skepticism model \cite{tsang2014opinion}, we propose a new model that combines the variance of friendship with traditional averaging model. Agents $\{1,2,...,n\}$ are connected by Erd\"{o}s R\'{e}nyi random graph $G=(V,E)$. $x_i \in [0,1]$ represents the opinion held by agent $i$. For each agent, $i$ has two sets of adjacent edges $E_O$ and $E_C$ which stand for the connections with close friends and ordinary neighbors respectively. In other words, agent $i$ has two types of neighbors $C(i)=\{v \in V|\{i,v\}\in E_C\}$ and $O(i)=\{v \in V|\{i,v\}\in E_O\}$. 
+Based on DEGROOT model \cite{das2014modeling} and skepticism model \cite{tsang2014opinion}, we propose a new model that combines the variance of friendship with traditional averaging model. Agents $\{1,2,...,n\}$ are connected by Erd\"{o}s R\'{e}nyi random graph $G=(V,E)$. $x_i \in [0,1]$ represents the opinion held by agent $i$. For each agent, $i$ has two sets of adjacent edges $E_O$ and $E_C$ which stand for the connections with close friends and ordinary neighbors respectively. In other words, agent $i$ has two types of neighbors $C(i)=\{v \in V|\{i,v\}\in E_C\}$ and $O(i)=\{v \in V|\{i,v\}\in E_O\}$ with different acquaintance degree. 
 
-In this model, agent $i$ is parameterized by one innate quantities: $\alpha$ is termed as the \textbf{acquaint parameter} to measure the probability to be persuaded by someone with a closer relationship. In reality, agent's opinion is more likely to be affected by his family members and close friends. Other types of neighbors may not achieve the same level of influence.
-The opinion $x_i$ is also influenced by various types of neighbors with different trust values: $y_{i,k}>0$ for close friends and $w_{i,j}>0$ for ordinary neighbors. There also exists a stubbornness weight $w_{i,i}$ as the proportion of agent's innate opinion.
+In this model, agent $i$ is parameterized by one innate quantity: $\alpha$ is termed as the \textbf{acquaint parameter} to measure the probability to be persuaded by someone with closer relationship. In reality, agent's opinion is more likely to be affected by his family members and close friends. Other types of neighbors can not achieve the same level of influence.
+The opinion $x_i$ is also influenced by various types of neighbors with different trust values: $y_{i,k}>0$ for close friends and $w_{i,j}>0$ for ordinary neighbors. There also exists a stubbornness weight $w_{i,i}$ contributed to the proportion of agent's innate opinion.
 
 \begin{equation}
 x_i \gets \frac{w_{i,i}x_i + \alpha\sum\limits_{j \in C(i)}y_{i,j}x_j + (1-\alpha)\sum\limits_{k \in O(i)}w_{i,k}x_k}{w_{i,i}x_i + \alpha\sum\limits_{j \in C(i)}y_{i,j} + (1-\alpha)\sum\limits_{k \in O(i)}w_{i,k}}
@@ -72,7 +72,7 @@ w_{i,k} \gets \frac{w_{i,k} + rT(x_i,x_k)}{1+r}
 \label{ordinary.weight}
 \end{equation}
 
-In our model, we assume $\min\limits_{{j}\in C_i}{y_{i,j}} > \max\limits_{{k}\in O_i}{w_{i,k}}$ since that the agent $i$ remains more receptive to his acquaintances $C_i$ than other ordinary neighbors $O_i$ in most cases. As indicated in Equation \ref{ordinary.weight}, for $w_{i,k}$ updated in each iteration, it is updated via trust function $T$ which is based on distance between opinions $x$ and $x{'}$ via the Gaussian kernel shown in Equation \ref{trust}. $r$ is defined as the learning rate of the population; higher $r$ means the agent would distrust other agents with different opinion more quickly. And it would lead to faster generation of small agents group which only hold similar opinion.
+In this model, we assume $\min\limits_{{j}\in C_i}{y_{i,j}} > \max\limits_{{k}\in O_i}{w_{i,k}}$ since that the agent $i$ remains more receptive to his acquaintances $C_i$ than other ordinary neighbors $O_i$ in most cases. As indicated in Equation \ref{ordinary.weight}, for $w_{i,k}$ updated in each iteration, it is updated via trust function $T$ which is based on distance between opinions $x$ and $x{'}$ via the Gaussian kernel shown in Equation \ref{trust}. $r$ is defined as the learning rate of the population; higher $r$ means the agent would distrust other agents with different opinion more quickly. And it would lead to faster generation of small group which only hold similar opinions.
 
 \begin{equation}
 T(x,x{'})=exp(-\frac{(x-x{'})^2}{h})

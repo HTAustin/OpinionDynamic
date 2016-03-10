@@ -82,13 +82,15 @@ def deGroot(A, s, max_rounds, eps=1e-6, conv_stop=True, save=False):
     opinions[0, :] = s
 
     for t in trange(1, max_rounds):
+
         z = A.dot(z)
+
 
         opinions[t, :] = z
 
         # print z
 
-        print norm(opinions[t - 1, :] - opinions[t, :], np.inf)
+        # print norm(opinions[t - 1, :] - opinions[t, :], np.inf)
         if conv_stop and \
            norm(opinions[t - 1, :] - opinions[t, :], np.inf) < eps:
             print('DeGroot converged after {t} rounds'.format(t=t))
@@ -118,8 +120,7 @@ if __name__=="__main__":
 
 	# s = np.random.normal(mu, sigma, n)
 	#Generate initial opinions for each agent
-	s = stats.truncnorm.rvs(
-          (lower-mu)/sigma,(upper-mu)/sigma,loc=mu,scale=sigma,size=n)
+	s = stats.truncnorm.rvs((lower-mu)/sigma,(upper-mu)/sigma,loc=mu,scale=sigma,size=n)
 
 	print "Initial opinions:"
 	print s
@@ -127,39 +128,19 @@ if __name__=="__main__":
 
 	
 
-	# nx.draw(G)
-	# # nx.draw_networkx_nodes(G,],node_size=2000,nodelist=[4])
-	# # nx.draw_networkx_nodes(G,pos,node_size=3000,nodelist=[0,1,2,3],node_color='b')
-	# # nx.draw_networkx_edges(G,pos,alpha=0.5,width=6)
-	# plt.axis('off')
-	# # plt.savefig("house_with_colors.png") # save as png
-	# plt.show() # display
 
 
 	G = nx.erdos_renyi_graph(n, .3)
 
-	A = nx.adjacency_matrix(G).todense()
-
-	# print(A.todense())
-
+	A = nx.adjacency_matrix(G).todense();A = np.squeeze(np.asarray(A))
 	print "Erdős-Rényi graph:"
-	print A.shape
-	# some properties
-	# print("node degree clustering")
-	# for v in nodes(G):
-	#     print('%s %d %f' % (v,degree(G,v),clustering(G,v)))
-
-	# # print the adjacency list to terminal 
-	# try:
-	#     write_adjlist(G,sys.stdout)
-	# except TypeError: # Python 3.x
-	#     write_adjlist(G,sys.stdout.buffer)
-
-	A=gnp(n,0.3, rand_weights=True, verbose=True)
+	print A.shape;print type(A), A
 
 
+
+	# A=gnp(n,0.3, rand_weights=True, verbose=True)
 	print "Random graph:"
-	print A.shape
+	print A.shape; print type(A),A
 
 	deGroot(A, s, max_rounds, eps=1e-3, conv_stop=True, save=True)
 

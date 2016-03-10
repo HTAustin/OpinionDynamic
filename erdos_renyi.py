@@ -27,6 +27,7 @@ import numpy.random as rand
 import random as stdrand
 import scipy.sparse as sparse
 from numpy.linalg import norm, inv
+import scipy.stats as stats
 
 from datetime import datetime
 from tqdm import trange
@@ -82,7 +83,12 @@ def deGroot(A, s, max_rounds, eps=1e-6, conv_stop=True, save=False):
 
     for t in trange(1, max_rounds):
         z = A.dot(z)
+
         opinions[t, :] = z
+
+        print z
+
+        print norm(opinions[t - 1, :] - opinions[t, :], np.inf)
         if conv_stop and \
            norm(opinions[t - 1, :] - opinions[t, :], np.inf) < eps:
             print('DeGroot converged after {t} rounds'.format(t=t))
@@ -99,12 +105,21 @@ def deGroot(A, s, max_rounds, eps=1e-6, conv_stop=True, save=False):
 
 
 if __name__=="__main__":  
-	n=40 # 10 nodes
-	m=80 # 20 edges
-	max_rounds=100000000
+	n=10 # 10 nodes
+	m=8 # 20 edges
+	max_rounds=10
 
-	mu, sigma = 0.5, 0.3 # mean and standard deviation
-	s = np.random.normal(mu, sigma, n)
+
+	lower = 0
+	upper = 1
+	mu = 0.5
+	sigma = 0.3
+
+
+	# s = np.random.normal(mu, sigma, n)
+	s = stats.truncnorm.rvs(
+          (lower-mu)/sigma,(upper-mu)/sigma,loc=mu,scale=sigma,size=n)
+
 
 	# print s
 
@@ -131,11 +146,13 @@ if __name__=="__main__":
 	# # plt.savefig("house_with_colors.png") # save as png
 	# plt.show() # display
 
-	A=gnp(n, 0.5)
+	A=gnp(n, 0.2)
+
+	print A
 
 	# s=
 
-	deGroot(A, s, max_rounds, eps=1e-6, conv_stop=True, save=False)
+	deGroot(A, s, max_rounds, eps=1e-3, conv_stop=True, save=True)
 
 
 

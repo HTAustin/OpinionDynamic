@@ -49,6 +49,11 @@ def preprocessArgs(s, max_rounds):
 
     return N, z, max_rounds
 
+def trustFunc(s, i, j,h):
+    
+    trust =  np.exp( - (s[i] - s[j])**2 / h )
+    return trust
+
 
 
 def deGroot(A, s, max_rounds, eps=1e-6, conv_stop=True, save=False):
@@ -110,7 +115,7 @@ def deGroot(A, s, max_rounds, eps=1e-6, conv_stop=True, save=False):
 
 
 if __name__=="__main__":  
-    n=200 # 10 nodes
+    n=30 # 10 nodes
     # m=8 # 20 edges
     max_rounds=1000000
 
@@ -119,6 +124,7 @@ if __name__=="__main__":
     upper = 1
     mu = 0.5
     sigma = 0.3
+    h=0.3
 
 
     # s = np.random.normal(mu, sigma, n)
@@ -137,18 +143,35 @@ if __name__=="__main__":
 
     A = nx.adjacency_matrix(G).todense()
     A = np.squeeze(np.asarray(A))
-    A=row_stochastic(A)
+    # A = row_stochastic(A)
     print "Erdős-Rényi graph:"
-    print A
-    plot_network(A, s, k=0.2, node_size=n, iterations=max_rounds, cmap=plt.cm.cool)
+    sA = sparse.coo_matrix(A)
+
+
+    
+    newG=nx.Graph()
+    for i,j,v in zip(sA.row, sA.col, sA.data):
+        
+        # v = rand.random()
+        trust = trustFunc(s,i,j,h)
+        newG.add_edge(i,j,weight=trust)
+        # print "(%d, %d), %s" % (i,j,v)
+
+    newA = nx.adjacency_matrix(newG).todense()
+    newA = np.squeeze(np.asarray(newA))
+    print newA
+
+    plot_weighted_graph(newG)
+
+    
+    # plot_network(A, s, k=0.2, node_size=n, iterations=max_rounds, cmap=plt.cm.cool)
 
     # A=gnp(n,0.3, rand_weights=True, verbose=True)
     # print "Random graph:"
     # print A.shape; print type(A),A
 
-    opinionsIterations=deGroot(A, s, max_rounds, eps=1e-6, conv_stop=True, save=True)
-    # print opinionsIterations
-    plot_opinions(opinionsIterations, title='', dcolor=False, interp=True,cmap=plt.cm.cool, linewidth=1.0)
+    # opinionsIterations=deGroot(newA, s, max_rounds, eps=1e-6, conv_stop=True, save=True)
+    # plot_opinions(opinionsIterations, title='', dcolor=False, interp=True,cmap=plt.cm.cool, linewidth=1.0)
 
 
 

@@ -16,7 +16,37 @@ import networkx as nx
 import seaborn as sns
 
 
-__all__ = ['plot_network', 'plot_opinions', 'plot_distance']
+__all__ = ['plot_network', 'plot_opinions', 'plot_distance', 'plot_weighted_graph']
+
+
+def plot_weighted_graph(G):
+
+    # for i,j,v in zip(sA.row, sA.col, sA.data):
+    #     print "(%d, %d), %s" % (i,j,v)
+
+    elarge=[(u,v) for (u,v,d) in G.edges(data=True) if d['weight'] >0.5]
+    esmall=[(u,v) for (u,v,d) in G.edges(data=True) if d['weight'] <=0.5]
+
+    # elarge=[(u,v) for u,v,d in zip(G.row, G.col, G.data) if d >0.5]
+    # esmall=[(u,v) for u,v,d in zip(G.row, G.col, G.data) if d <=0.5]
+
+    pos=nx.spring_layout(G) # positions for all nodes
+
+    # nodes
+    nx.draw_networkx_nodes(G,pos,node_size=700)
+
+    # edges
+    nx.draw_networkx_edges(G,pos,edgelist=elarge,
+                        width=6)
+    nx.draw_networkx_edges(G,pos,edgelist=esmall,
+                        width=6,alpha=0.5,edge_color='b',style='dashed')
+
+    # labels
+    nx.draw_networkx_labels(G,pos,font_size=20,font_family='sans-serif')
+
+    plt.axis('off')
+    # plt.savefig("weighted_graph.png") # save as png
+    plt.show() # display
 
 
 def plot_network(A, s, k=0.2, node_size=40, iterations=500, cmap=plt.cm.cool):

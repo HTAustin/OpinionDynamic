@@ -86,7 +86,7 @@ def deGroot(A, s, max_rounds, eps=1e-6, conv_stop=True, save=False):
 
         opinions[t, :] = z
 
-        print z
+        # print z
 
         print norm(opinions[t - 1, :] - opinions[t, :], np.inf)
         if conv_stop and \
@@ -107,7 +107,7 @@ def deGroot(A, s, max_rounds, eps=1e-6, conv_stop=True, save=False):
 if __name__=="__main__":  
 	n=10 # 10 nodes
 	m=8 # 20 edges
-	max_rounds=10
+	max_rounds=10000
 
 
 	lower = 0
@@ -117,15 +117,34 @@ if __name__=="__main__":
 
 
 	# s = np.random.normal(mu, sigma, n)
+	#Generate initial opinions for each agent
 	s = stats.truncnorm.rvs(
           (lower-mu)/sigma,(upper-mu)/sigma,loc=mu,scale=sigma,size=n)
 
+	print "Initial opinions:"
+	print s
 
-	# print s
 
-	# G=gnm_random_graph(n,m)
+	
 
-	# # some properties
+	# nx.draw(G)
+	# # nx.draw_networkx_nodes(G,],node_size=2000,nodelist=[4])
+	# # nx.draw_networkx_nodes(G,pos,node_size=3000,nodelist=[0,1,2,3],node_color='b')
+	# # nx.draw_networkx_edges(G,pos,alpha=0.5,width=6)
+	# plt.axis('off')
+	# # plt.savefig("house_with_colors.png") # save as png
+	# plt.show() # display
+
+
+	G = nx.erdos_renyi_graph(n, .3)
+
+	A = nx.adjacency_matrix(G).todense()
+
+	# print(A.todense())
+
+
+	print A
+	# some properties
 	# print("node degree clustering")
 	# for v in nodes(G):
 	#     print('%s %d %f' % (v,degree(G,v),clustering(G,v)))
@@ -136,21 +155,9 @@ if __name__=="__main__":
 	# except TypeError: # Python 3.x
 	#     write_adjlist(G,sys.stdout.buffer)
 
-	# print G
-
-	# nx.draw(G)
-	# # nx.draw_networkx_nodes(G,],node_size=2000,nodelist=[4])
-	# # nx.draw_networkx_nodes(G,pos,node_size=3000,nodelist=[0,1,2,3],node_color='b')
-	# # nx.draw_networkx_edges(G,pos,alpha=0.5,width=6)
-	# plt.axis('off')
-	# # plt.savefig("house_with_colors.png") # save as png
-	# plt.show() # display
-
-	A=gnp(n, 0.2)
+	A=gnp(n,0,3)
 
 	print A
-
-	# s=
 
 	deGroot(A, s, max_rounds, eps=1e-3, conv_stop=True, save=True)
 

@@ -107,7 +107,7 @@ def deGroot(A, s, max_rounds, eps=1e-6, conv_stop=True, save=False):
 if __name__=="__main__":  
 	n=10 # 10 nodes
 	m=8 # 20 edges
-	max_rounds=10000
+	max_rounds=1000000
 
 
 	lower = 0
@@ -142,8 +142,8 @@ if __name__=="__main__":
 
 	# print(A.todense())
 
-
-	print A
+	print "Erdős-Rényi graph:"
+	print A.shape
 	# some properties
 	# print("node degree clustering")
 	# for v in nodes(G):
@@ -155,9 +155,11 @@ if __name__=="__main__":
 	# except TypeError: # Python 3.x
 	#     write_adjlist(G,sys.stdout.buffer)
 
-	A=gnp(n,0,3)
+	A=gnp(n,0.3, rand_weights=True, verbose=True)
 
-	print A
+
+	print "Random graph:"
+	print A.shape
 
 	deGroot(A, s, max_rounds, eps=1e-3, conv_stop=True, save=True)
 

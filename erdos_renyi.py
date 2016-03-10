@@ -33,6 +33,7 @@ from datetime import datetime
 from tqdm import trange
 
 from util import *
+from viz import *
 
 
 def preprocessArgs(s, max_rounds):
@@ -106,43 +107,48 @@ def deGroot(A, s, max_rounds, eps=1e-6, conv_stop=True, save=False):
     return opinions[0:t+1, :]
 
 
+
+
 if __name__=="__main__":  
-	n=10 # 10 nodes
-	m=8 # 20 edges
-	max_rounds=1000000
+    n=200 # 10 nodes
+    # m=8 # 20 edges
+    max_rounds=1000000
 
 
-	lower = 0
-	upper = 1
-	mu = 0.5
-	sigma = 0.3
+    lower = 0
+    upper = 1
+    mu = 0.5
+    sigma = 0.3
 
 
-	# s = np.random.normal(mu, sigma, n)
-	#Generate initial opinions for each agent
-	s = stats.truncnorm.rvs((lower-mu)/sigma,(upper-mu)/sigma,loc=mu,scale=sigma,size=n)
+    # s = np.random.normal(mu, sigma, n)
+    #Generate initial opinions for each agent
+    s = stats.truncnorm.rvs((lower-mu)/sigma,(upper-mu)/sigma,loc=mu,scale=sigma,size=n)
 
-	print "Initial opinions:"
-	print s
-
-
-	
+    print "Initial opinions:"
+    print s
 
 
 
-	G = nx.erdos_renyi_graph(n, .3)
-
-	A = nx.adjacency_matrix(G).todense();A = np.squeeze(np.asarray(A))
-	print "Erdős-Rényi graph:"
-	print A.shape;print type(A), A
 
 
 
-	# A=gnp(n,0.3, rand_weights=True, verbose=True)
-	print "Random graph:"
-	print A.shape; print type(A),A
+    G = nx.erdos_renyi_graph(n, .2)
 
-	deGroot(A, s, max_rounds, eps=1e-3, conv_stop=True, save=True)
+    A = nx.adjacency_matrix(G).todense()
+    A = np.squeeze(np.asarray(A))
+    A=row_stochastic(A)
+    print "Erdős-Rényi graph:"
+    print A
+    plot_network(A, s, k=0.2, node_size=n, iterations=max_rounds, cmap=plt.cm.cool)
+
+    # A=gnp(n,0.3, rand_weights=True, verbose=True)
+    # print "Random graph:"
+    # print A.shape; print type(A),A
+
+    opinionsIterations=deGroot(A, s, max_rounds, eps=1e-6, conv_stop=True, save=True)
+    # print opinionsIterations
+    plot_opinions(opinionsIterations, title='', dcolor=False, interp=True,cmap=plt.cm.cool, linewidth=1.0)
 
 
 

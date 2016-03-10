@@ -70,6 +70,7 @@ def plot_opinions(opinions, title='', dcolor=False, interp=True,
     plt.xlabel('t')
     plt.title(title)
     plt.axis((0, max_rounds, opinions.min() - 0.1, opinions.max() + 0.1))
+    plt.show()
 
 
 def plot_distance(A, s, opinions):

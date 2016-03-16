@@ -4,7 +4,6 @@
 '''
 Visualization functions
 '''
-
 from __future__ import division, print_function
 
 import numpy as np
@@ -15,11 +14,10 @@ from util import expected_equilibrium
 import networkx as nx
 import seaborn as sns
 
-
 __all__ = ['plot_network', 'plot_opinions', 'plot_distance', 'plot_weighted_graph']
 
 
-def plot_weighted_graph(G):
+def plot_weighted_graph(G, nodeColorList):
 
     # for i,j,v in zip(sA.row, sA.col, sA.data):
     #     print "(%d, %d), %s" % (i,j,v)
@@ -32,8 +30,23 @@ def plot_weighted_graph(G):
 
     pos=nx.spring_layout(G) # positions for all nodes
 
-    # nodes
-    nx.draw_networkx_nodes(G,pos,node_size=700)
+
+
+    # nodeList=[]
+    # for (u,v,d) in G.edges(data=True):
+    #     nodeList.append(u)
+
+    # nodeSet=set(nodeList)
+    # print("Set of graph node:")
+    # print(nodeSet)
+
+    # print(nodeColorList)
+    # newNodeColorList=[]
+    # for nodeId in nodeSet:
+    #     print (nodeColorList[nodeId])
+    #     newNodeColorList.append(int(nodeColorList[nodeId]))
+    # print(newNodeColorList)
+    nx.draw_networkx_nodes(G,pos,node_color=nodeColorList,node_size=700)
 
     # edges
     nx.draw_networkx_edges(G,pos,edgelist=elarge,

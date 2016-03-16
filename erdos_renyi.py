@@ -35,6 +35,9 @@ from tqdm import trange
 from util import *
 from viz import *
 
+from matplotlib.backends.backend_pdf import PdfPages
+
+
 
 def preprocessArgs(s, max_rounds):
     '''Argument processing common for most models.
@@ -49,7 +52,7 @@ def preprocessArgs(s, max_rounds):
 
     return N, z, max_rounds
 
-def trustFunc(s, i, j,h):
+def trustFunc(s, i, j, h):
     
     trust =  np.exp( - (s[i] - s[j])**2 / h )
     return trust
@@ -115,7 +118,7 @@ def deGroot(A, s, max_rounds, eps=1e-6, conv_stop=True, save=False):
 
 
 if __name__=="__main__":  
-    n=30 # 10 nodes
+    n=40 # 10 nodes
     # m=8 # 20 edges
     max_rounds=1000000
 
@@ -124,18 +127,23 @@ if __name__=="__main__":
     upper = 1
     mu = 0.5
     sigma = 0.3
-    h=0.3
+    h=0.2
 
+    pp = PdfPages('erdos_renyi_graph.pdf')
 
     # s = np.random.normal(mu, sigma, n)
     #Generate initial opinions for each agent
     s = stats.truncnorm.rvs((lower-mu)/sigma,(upper-mu)/sigma,loc=mu,scale=sigma,size=n)
 
+    nodeColorList=[]
+
+    for opinion in s:
+        
+        nodeColorList.append(opinion*30)
+
+
     print "Initial opinions:"
     print s
-
-
-
 
 
 
@@ -159,9 +167,18 @@ if __name__=="__main__":
 
     newA = nx.adjacency_matrix(newG).todense()
     newA = np.squeeze(np.asarray(newA))
-    print newA
 
-    plot_weighted_graph(newG)
+    # plot_weighted_graph(newG, nodeColorList,cmap=plt.cm.Blues)
+    pos=nx.spring_layout(newG,iterations=500)
+    # pos=nx.spring_layout(newG)
+
+    nx.draw(newG,pos,node_color=nodeColorList,node_size=800,cmap=plt.cm.Oranges)
+
+    # plt.show()
+    plt.savefig(pp, format='pdf')
+
+    pp.savefig()
+    pp.close()
 
     
     # plot_network(A, s, k=0.2, node_size=n, iterations=max_rounds, cmap=plt.cm.cool)
